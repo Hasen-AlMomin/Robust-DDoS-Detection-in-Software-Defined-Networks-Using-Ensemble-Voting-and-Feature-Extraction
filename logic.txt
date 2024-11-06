@@ -1,0 +1,269 @@
+Network parametes collections
+=================================
+1. frequently collect the flow statistics (Openflow flow stats request message)
+2. From the received flows 
+   - calculate the speed of flow entry(sfe), speed of src ip(ssip), ratio of flow pair(rfe), std dev of flow bytes, std dev of flow packets
+3. populate the result.csv file with those parameters
+
+
+
+
+
+speed of flow entry(fer):
+-------------------------
+1. store the previous flow count
+2. count the current flows
+3. difference from current flows to previous flows are new flow entries
+
+t0: 10 flows (total flow count)
+
+t10: 20 flows (total flow count)
+
+speed of flow entry = t10- t0  = 10 new flows
+
+
+
+speed_of_source_ip (sigs)
+-----------------------
+1. from the flows extract the src ips and update in the ssip list (No duplicate entries)
+2. calculate the length of  the ssip list.
+3. difference from current length from previous measure length shows new src ips.
+
+
+t0 :  ssip : 10
+
+t10   ssip: 50
+
+speed of src ip =  t10- t0 = 40
+
+
+ratio flow pair:
+-------------------
+
+flow1:  10.0.0.1 to 10.0.0.2 
+flow2:  10.0.0.2 to 10.0.0.1 
+
+flow3:  3.4.5.6 to 10.0.0.1
+flow4:  3.4.5.7 to 10.0.0.1
+
+
+ number of interactive flows / total number of flows = 1
+
+  2/2 = 1
+
+ 2/4 = 0.5 ()
+
+
+
+
+
+
+
+
+
+
+std dev of flow bytes:
+-----------------------
+
+calcuate the bytes count(for a interval) on each flow
+using statistics library stddev function to calcuated  this value.
+
+flow statistics, we will receive n_packets, n_bytes values.
+
+
+t0:  10.0.0.1 to 10.0.0.2  -  100packets
+t10:  10.0.0.1 to 10.0.0.2  -  500packets
+
+
+identify the change : t10-t0 = 400 packet for flow1(10.0.0.1 to 10.0.0.2)
+
+[400,x,x,x]
+
+
+
+std dev of flow packets:
+------------------------
+
+calcuate the packets count(for a interval) on each flow
+using statistics library stddev function to calcuated  this value.
+
+
+
+openflowstats resp message (flags):
+========================================
+Multipart message.
+
+10flows -> will come on one openflowstats resp message 
+10000 flows -> This can't accodomate in one msg. It will be sending on series of messages(multipart)
+				flag = 1 means, some more packets will be  coming.
+                end will be identified with flag = 0
+
+
+
+
+
+
+
+DDOS Detection:
+============
+
+1. train the ML algo with result.csv 
+2. frequently collect the flow statistics
+3. derive the network parameters from the flows
+4. pass the network parameters to ML algo, for prediction
+5. ML Algorithm will reply with prediction result is "ATTACK" or "NORMAL" traffic
+
+
+DDoS Prevention
+================
+Block the port 
+
+
+
+
+
+
+
+
+
+
+
+
+speed of flow entry(sfe):
+
+speed of src ip(ssip):
+
+ratio of flow pair(rfe):
+========================
+All flows checked
+ratio 1.
+ration less than 1.
+
+
+
+std dev of flow bytes:
+
+std dev of flow packets:
+
+
+h1 ping h2
+10.1.1.1   - 10.1.1.2
+
+two flows
+flow1:  10.1.1.1   - 10.1.1.2
+flow2:  10.1.1.2   - 10.1.1.1
+
+
+Attacker 
+flow1:  10.1.1.1   - 10.1.1.2
+flow2:  10.1.1.2   - 10.1.1.1
+flow1:  3.4.5.2   - 10.1.1.2
+flow1:  3.4.5.1   - 10.1.1.2
+
+
+new IPs:
+sp
+
+=====================================
+
+Openflow flow statistics:
+
+
+
+- collecting flow statistics every - 5 sec
+   (may be 10 flows, 1000 flows when attack happens)
+-- we are deriving/calculating those 5 parametes
+
+
+
+
+
+
+Application logic:
+==================
+
+Datacollection
+==================
+
+1. frequently collect the flow statistics
+2. derive the network parameters from the flows
+3. write in to the csv file
+4. repetive process(jump to 1)
+
+speed of flow entries:
+
+t0 - 10 flows
+t10 - 15 flows
+new flows = 15 - 10 = 5 ()
+
+speed of src ip
+
+t0 - 10flows.  precvious_srcips = []  10.1.1.1, 2,10
+t10   20 flows .   current)srcips...[] 20   2
+
+
+h1 ping h2 , h3,h4,h5
+
+flows : 10 flows 
+
+src ip:   [10.1.1.1, 10.1.1.2,10.1.1.3,5]  5 src ip
+
+
+speed of src ip
+
+
+
+ration of flow pair:
+
+total flows :
+number of interactive flows :
+
+ flows [10.1.1.1_10.1.1.2] = 1
+     [10.1.1.2_10.1.1.1] = 1
+ interactive _flows ++
+
+
+t0  :  10.1.1.1 to 10.1.1.2  =   8, 1000bytes
+
+t10 :  10.1.1.1 to 10.1.1.2  =   10, 1200bytes
+
+
+kvstore["10.1.1.1_10.1.1.2.packetcount"] = 1000
+
+t10 , 1200
+
+1200 - 1000
+
+vstore["10.1.1.1_10.1.1.2.packetcount"] = 1200
+
+
+
+10 50 flows --- 1 msg (OFPStatsReply message)
+
+2000....  cannot fit in to 1 msg (OFP Multipart message - OFPStatsReply....Flag0)
+
+
+
+
+
+ARP:
+---
+
+h1 to h2
+
+
+
+
+
+
+Detection:
+=======
+1. train the ML algo with result.csv 
+2. frequently collect the flow statistics
+3. derive the network parameters from the flows
+4. pass the network parameters to ML algo, for prediction
+5. Based prediction result (if attack)
+   block the attacker port (prevention)
+
+
+
