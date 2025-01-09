@@ -44,7 +44,7 @@ cd /path/to/your/ryu/app/
 ryu-manager app1.py
 ```
 
-## Step 2: Run the Network Topology
+### Step 2: Run the Network Topology
 In another terminal, navigate to the directory with the topo5.py file and run the network topology in Mininet:
 
 ```bash
