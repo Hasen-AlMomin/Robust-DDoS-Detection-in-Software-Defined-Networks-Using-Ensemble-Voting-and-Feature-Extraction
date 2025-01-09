@@ -42,3 +42,51 @@ Navigate to the directory where your Ryu controller application (`app1.py`) is l
 ```bash
 cd /path/to/your/ryu/app/
 ryu-manager app1.py
+```
+
+## Step 2: Run the Network Topology
+In another terminal, navigate to the directory with the topo5.py file and run the network topology in Mininet:
+
+```bash
+cd /path/to/your/mininet/topo/
+sudo python3 topo5.py
+```
+This will create the SDN topology as defined in topo5.py.
+
+### Step 3: Test the Environment (DDoS Attack Simulation)
+You can simulate a DDoS attack using Hping3. First, ensure you have Hping3 installed:
+```bash
+sudo apt-get install hping3
+```
+Then, run the DDoS attack with the following command:
+```bash
+sudo hping3 --flood -p 80 <target-ip>
+```
+Replace <target-ip> with the IP address of the target machine in your network.
+
+### Step 4: Running the Detection Algorithms
+After running the network and simulating the DDoS attack, you can run the detection algorithms to evaluate the DDoS detection performance.
+
+Execute the following Python scripts:
+Run the Ensemble algorithm accuracy score:
+
+```bash
+python accuracy_score_Hybrid.py
+```
+
+Generate the confusion matrix:
+
+
+```bash
+python confusion_matrix.py
+```
+
+Evaluate the detection rate:
+
+```bash
+python detection_rate.py
+```
+These scripts will analyze the attack and evaluate the detection system's performance.
+
+## License
+This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
